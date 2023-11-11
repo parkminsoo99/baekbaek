@@ -15,7 +15,7 @@ def to():
     for i in range(1, a+1):
         if (follow[i] == 0):
             heapq.heappush(heap, i)
-
+    print(heap)
     while heap:
         now = heapq.heappop(heap)
         result.append(now)
@@ -23,6 +23,7 @@ def to():
             follow[i] -= 1
             if follow[i] == 0:
                 heapq.heappush(heap, i)
+                print(heap, i)
     for i in result:
         print(i, end=' ')
 
