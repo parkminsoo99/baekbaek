@@ -2,9 +2,10 @@ import java.util.*;
 class Solution {
     public int solution(int[][] targets) {
         int answer = 0;
-        Arrays.sort(targets, (a,b) -> Integer.compare(a[1],b[1]));
+        Arrays.sort(targets, (a,b) -> {return a[1]-b[1];});
         Deque<int[]> list = new ArrayDeque<>(Arrays.asList(targets));
         while(!list.isEmpty()){
+            System.out.println();
             int[] poped1 = list.removeFirst();
             int start1 = poped1[0];
             int end1 = poped1[1];
@@ -16,8 +17,7 @@ class Solution {
                     list.addFirst(new int[] {start2, end2});
                     break;
                 }
-            }
-            
+            }         
             answer +=1;   
         }  
         return answer;
