@@ -1,51 +1,69 @@
 import java.util.*;
-
 class Solution {
     public int solution(int[] queue1, int[] queue2) {
-        // 두 큐를 하나의 연속 배열처럼 활용하기 위해 초기화
-        Deque<Long> q1 = new ArrayDeque<>();
-        Deque<Long> q2 = new ArrayDeque<>();
-        long sum1 = 0, sum2 = 0;
-        
-        for (long num : queue1) {
-            q1.add(num);
-            sum1 += num;
+        Deque<Long> q1 = new ArrayDeque();
+        Deque<Long> q2 = new ArrayDeque();
+        int answer = 0;
+        int count = 0;
+        long SUM1 = 0;
+        long SUM2 = 0;
+        for(long i : queue1){
+            q1.add(i);
+            SUM1 += i;
         }
-        for (long num : queue2) {
-            q2.add(num);
-            sum2 += num;
+        for(long i : queue2){
+            q2.add(i);
+            SUM2 +=i;
         }
-        
-        // 두 큐의 합이 홀수면 나누는 것이 불가능
-        if ((sum1 + sum2) % 2 != 0) {
-            return -1;
+        long finish = (q1.size() + q2.size()) * 2;
+        if((SUM1 + SUM2) % 2 == 1){
+            answer = -1;
+            return answer;
         }
-        
-        long target = (sum1 + sum2) / 2;
-        int maxOperations = (queue1.length + queue2.length) * 2; // 최대 가능한 이동 횟수
-        int operations = 0;
-
-        // 큐 상태를 조정하여 합을 맞추기
-        while (operations <= maxOperations) {
-            if (sum1 == target) {
-                return operations; // 두 큐의 합이 같아진 경우
-            } else if (sum1 > target) {
-                // sum1이 더 크면 q1에서 하나 빼서 q2로 이동
-                long num = q1.pollFirst();
-                sum1 -= num;
-                sum2 += num;
-                q2.addLast(num);
-            } else {
-                // sum2가 더 크면 q2에서 하나 빼서 q1으로 이동
-                long num = q2.pollFirst();
-                sum2 -= num;
-                sum1 += num;
-                q1.addLast(num);
+        else{
+            long divided = (long) (SUM1 + SUM2) / 2;
+            long minusSUM1 = SUM1 - divided;
+            long minusSUM2 = SUM2 - divided;
+            long zeroValue = 0;
+            if(minusSUM2 > minusSUM1){
+                zeroValue = SUM2 - divided;
             }
-            operations++;
+            else{
+                zeroValue = SUM1 - divided;
+            }
+            
+            while (zeroValue != 0){//추후 -1일 때도 추가 필요
+                if(count > finish){
+                    answer = -1;
+                    return answer;
+                }
+                if(minusSUM1 < minusSUM2 && zeroValue > 0){
+                    count +=1;
+                    long popped = q2.removeFirst();
+                    zeroValue -= popped;
+                    q1.addLast(popped);
+                }
+                if(minusSUM1 < minusSUM2 && zeroValue < 0){
+                    count +=1;
+                    long popped = q1.removeFirst();
+                    zeroValue += popped;
+                    q2.addLast(popped);
+                }
+                if(minusSUM1 > minusSUM2 && zeroValue > 0){
+                    count +=1;
+                    long popped = q1.removeFirst();
+                    zeroValue -= popped;
+                    q2.addLast(popped);
+                }
+                if(minusSUM1 > minusSUM2 && zeroValue < 0){
+                    count +=1;
+                    long popped = q2.removeFirst();
+                    zeroValue += popped;
+                    q1.addLast(popped);
+                }
+            }
         }
-
-        // 여기까지 왔다면 합을 맞출 수 없는 경우
-        return -1;
+        answer = count;
+        return answer;
     }
 }
