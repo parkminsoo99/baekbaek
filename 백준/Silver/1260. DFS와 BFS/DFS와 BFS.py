@@ -1,31 +1,44 @@
-import sys
+
 from collections import deque
-def bfs(start,visited):
-    q = deque([start])
-    visited[start] = True
-    while q:
-        pop = q.popleft()
-        print(pop, end=' ')
-        for i in graph[pop]:
-            if not visited[i]:
-                visited[i] = True
-                q.append(i)
-def dfs(start, visited):
-    print(start,end=' ')
-    visited[start] = True
-    for i in graph[start]:
-        if not visited[i]:
-            dfs(i, visited)
-N, M, V = map(int,sys.stdin.readline().split())
-graph = [[]for _ in range(N+1)]
-visited = [False] * (N+1)
+import copy
+N, M, V = map(int, input().split())
+
+visited = [False for _ in range(N+1)]
+graph = [[] for _ in range(N+1)]
+
 for _ in range(M):
-    x, y = map(int,sys.stdin.readline().split())
+    x, y = map(int, input().split())
     graph[x].append(y)
     graph[y].append(x)
 
-for i in range(len(graph)):
+for i in range(1, N+1):
     graph[i].sort()
-dfs(V, visited.copy())
+
+
+def dfs(visited, graph, V):
+    visited[V] = True
+    print(V, end=' ')
+    for i in graph[V]:
+        if not visited[i]:
+            visited[i] = True
+            dfs(visited, graph, i)
+
+
+dfs(copy.deepcopy(visited), graph, V)
+
 print()
-bfs(V, visited.copy())
+
+
+def bfs(visited, graph, V):
+    q = deque([V])
+    visited[V] = True
+    while q:
+        poped = q.popleft()
+        print(poped, end=' ')
+        for i in graph[poped]:
+            if not visited[i]:
+                q.append(i)
+                visited[i] = True
+
+
+bfs(copy.deepcopy(visited), graph, V)
